@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './App.css';
 
 import firebase from 'firebase/app';
@@ -22,12 +22,13 @@ const auth = firebase.auth();
 const firestore = firebase.firestore();
 
 function App() {
-  const [user] = userAuthState(auth);
+  const [user] = useAuthState(auth);
 
   return (
     <div className="App">
       <header className="App-header">
-
+        <h1>⚛️🔥💬</h1>
+        <SignOut />
       </header>
 
       <section>
@@ -50,12 +51,12 @@ function SignIn() {
 
 function SignOut() {
   return auth.currentUser && (
-
     <button onClick={() => auth.signOut()}>Sign Out</button>
   )
 }
 
 function ChatRoom() {
+  const dummy = useRef();
   const messagesRef = firestore.collection('messages');
   const query = messagesRef.orderBy('createdAt').limit(25);
 
@@ -63,7 +64,7 @@ function ChatRoom() {
 
   const [formValue, setFormValue] = useState('');
 
-  const sendMessage = async(e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
 
     const { uid, photoURL } = auth.currentUser;
@@ -76,16 +77,20 @@ function ChatRoom() {
     });
 
     setFormValue('');
+
+    dummy.current.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
     <>
-      <div>
+      <main>
         {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
-      </div>
+
+        <div ref={dummy}></div>
+      </main>
 
       <form onSubmit={sendMessage}>
-        <input value={formValue} onClick={(e) => setFormValue(e.target.value)} />
+        <input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
         <button type="submit">🦖</button>
       </form>
     </>
@@ -99,7 +104,7 @@ function ChatMessage(props) {
 
   return (
     <div className={`message ${messageClass}`}>
-      <img src={photoURL} />
+      <img alt="profile" src={photoURL} />
       <p>{text}</p>
     </div>
   )
