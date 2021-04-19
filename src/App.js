@@ -64,10 +64,24 @@ function ChatRoom() {
   return (
     <>
       <div>
-        {messages && messages.map(msg => <ChatMessage key={msg.id} />)}
+        {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
       </div>
     </>
   )
 }
+
+function ChatMessage(props) {
+  const { text, uid, photoURL } = props.message;
+
+  const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
+
+  return (
+    <div className={`message ${messageClass}`}>
+      <img src={photoURL} />
+      <p>{text}</p>
+    </div>
+   
+  )
+  }
 
 export default App;
