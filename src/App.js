@@ -80,8 +80,7 @@ function ChatMessage(props) {
       <img src={photoURL} />
       <p>{text}</p>
     </div>
-   
   )
-  }
+}
 
 export default App;
